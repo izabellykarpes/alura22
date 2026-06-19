@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-i18n="title">Mercado Financeiro — Visualizador</title>
+
+  <!-- p5.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <script defer src="sketch.js"></script>
+  <script defer>
+    // Simple i18n for PT/EN using data-i18n attributes
+    const i18n = {
+      pt: {
+        title: 'Mercado Financeiro — Visualizador',
+        h1: 'Mercado Financeiro',
+        tagline: 'Visualização simples e interativa usando p5.js',
+        resumo_h2: 'Resumo',
+        resumo_p: 'Este demo mostra um gráfico de preços com interação mínima — ideal como página inicial de projeto sobre mercado financeiro.',
+        controles_h3: 'Controles',
+        controle_li1: 'Passe o mouse sobre o gráfico para ver tooltip.',
+        controle_li2: 'Redimensione a janela para tornar o canvas responsivo.',
+        about_h2: 'Sobre',
+        about_p: 'O código está otimizado para trabalhar dentro do ciclo p5 (preload / setup / draw). Os dados aqui são de exemplo — substitua pela sua fonte (API, CSV, etc.).',
+        footer: '© {year} Mercado Financeiro — Demo p5.js',
+        source: 'Fonte: Dados de exemplo — substitua por sua API',
+        lang_pt: 'PT',
+        lang_en: 'EN'
+      },
+      en: {
+        title: 'Financial Market — Viewer',
+        h1: 'Financial Market',
+        tagline: 'Simple interactive visualization using p5.js',
+        resumo_h2: 'Summary',
+        resumo_p: 'This demo shows a price chart with minimal interaction — ideal as a project landing page about the financial market.',
+        controles_h3: 'Controls',
+        controle_li1: 'Hover the chart to see a tooltip.',
+        controle_li2: 'Resize the window to keep the canvas responsive.',
+        about_h2: 'About',
+        about_p: 'The code is optimized to run inside the p5 lifecycle (preload / setup / draw). Data are examples — replace with your data source (API, CSV, etc.).',
+        footer: '© {year} Financial Market — p5.js demo',
+        source: 'Source: Example data — replace with your API',
+        lang_pt: 'PT',
+        lang_en: 'EN'
+      }
+    };
+
+    function applyLang(lang){
+      const map = i18n[lang] || i18n.pt;
+      // set title
+      document.title = map.title;
+      // set all data-i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (!map[key]) return;
+        if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea'){
+          el.placeholder = map[key];
+        } else {
+          el.textContent = map[key].replace('{year}', new Date().getFullYear());
+        }
+      });
+      // update source text in canvas (drawn by p5 uses #canvas-source)
+      const src = document.getElementById('canvas-source');
+      if (src) src.textContent = map.source;
+      // mark active button
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.datasetLang === lang));
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // initial language (browser preference fallback)
+      const browser = (navigator.language || navigator.userLanguage || 'pt').slice(0,2);
+      const initial = (browser === 'en') ? 'en' : 'pt';
+      document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', ()=> applyLang(b.datasetLang)));
+      applyLang(initial);
+    });
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="title-wrap">
+        <h1 data-i18n="h1">Mercado Financeiro</h1>
+        <p class="tagline" data-i18n="tagline">Visualização simples e interativa usando p5.js</p>
+      </div>
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="pt" dataLang="pt" aria-label="Português">PT</button>
+        <button class="lang-btn" data-lang="en" dataLang="en" aria-label="English">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <h2 data-i18n="resumo_h2">Resumo</h2>
+      <p data-i18n="resumo_p">Este demo mostra um gráfico de preços com interação mínima — ideal como página inicial de projeto sobre mercado financeiro.</p>
+    </section>
+
+    <section id="canvas-wrap" class="canvas-wrap">
+      <!-- canvas do p5.js será anexado aqui -->
+      <div id="canvas-container"></div>
+      <aside class="legend">
+        <h3 data-i18n="controles_h3">Controles</h3>
+        <ul>
+          <li data-i18n="controle_li1">Passe o mouse sobre o gráfico para ver tooltip.</li>
+          <li data-i18n="controle_li2">Redimensione a janela para tornar o canvas responsivo.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="about">
+      <h2 data-i18n="about_h2">Sobre</h2>
+      <p data-i18n="about_p">O código está otimizado para trabalhar dentro do ciclo p5 (preload / setup / draw). Os dados aqui são de exemplo — substitua pela sua fonte (API, CSV, etc.).</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small data-i18n="footer">© <span id="year"></span> Mercado Financeiro — Demo p5.js</small>
+    </div>
+  </footer>
+
+  <script>
+    // Atualiza ano no rodapé (em elementos que don't use i18n placeholder)
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
